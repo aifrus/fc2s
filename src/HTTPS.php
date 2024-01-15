@@ -12,6 +12,7 @@ class HTTPS
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0); // Use HTTP/2.0
         $html = curl_exec($ch);
         curl_close($ch);
         return $html;
