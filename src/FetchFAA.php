@@ -43,8 +43,10 @@ class FetchFAA
         foreach (['Preview', 'Current', 'Archives'] as $section) {
             $nodes = $xpath->query("//h2[text()='$section']/following-sibling::ul[1]/li");
             foreach ($nodes as $node) {
-                if (preg_match('/\d{4}-\d{2}-\d{2}/', $node->textContent, $matches)) {
-                    $dates[] = $matches[0];
+                if (preg_match('/\b(\w+ \d{1,2}, \d{4})\b/', $node->textContent, $matches)) {
+                    // Convert the date to the format YYYY-MM-DD
+                    $date = date('Y-m-d', strtotime($matches[0]));
+                    $dates[] = $date;
                 }
             }
         }
