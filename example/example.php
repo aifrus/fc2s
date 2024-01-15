@@ -5,7 +5,7 @@ namespace Aifrus\Fc2s;
 require_once(__DIR__ . '/../vendor/autoload.php');
 
 $export_dir = __DIR__ . '/export';
-mkdir($export_dir);
+@mkdir($export_dir);
 
 $config = [
     'host' => '127.0.0.1',
