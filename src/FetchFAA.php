@@ -63,7 +63,7 @@ class FetchFAA
         return $dates[0];
     }
 
-    public static function get_current_data_file()
+    public static function get_current_data_file_url()
     {
         $date = self::get_current_date();
         $date = date('d_M_Y', strtotime($date));
