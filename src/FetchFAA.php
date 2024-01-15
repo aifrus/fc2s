@@ -53,4 +53,20 @@ class FetchFAA
 
         return $dates;
     }
+
+    public static function get_current_date()
+    {
+        $dates = self::get_available_dates();
+        if (strtotime($dates[0]) > time()) {
+            return $dates[1];
+        }
+        return $dates[0];
+    }
+
+    public static function get_current_data_file()
+    {
+        $date = self::get_current_date();
+        $date = date('d_M_Y', strtotime($date));
+        return str_replace('DD_Mon_YYYY', $date, self::DATA_FILE);
+    }
 }
