@@ -24,6 +24,25 @@ class FetchFAA
         "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     ];
 
+    public static function fetch_current(): string|false
+    {
+        $tmp_dir = sys_get_temp_dir() . '/fc2s_' . time() . '_' . rand(10000000, 99999999);
+        mkdir($tmp_dir);
+        return self::fetch(self::get_current_date(), $tmp_dir);
+    }
+
+    public static function fetch(string $date, string $tmp_dir): string|false
+    {
+        $url = self::get_data_file_url($date);
+        $zip_path = $tmp_dir . '/' . basename($url);
+        $res = HTTPS::download($url, $zip_path, self::HEADERS);
+        if (!$res) return false;
+        $res = Zip::extract_all($zip_path, $tmp_dir);
+        if (!$res) return false;
+        unlink($zip_path);
+        return $tmp_dir;
+    }
+
     public static function get_home_page_html()
     {
         return HTTPS::get(self::HOME_PAGE, self::HEADERS);
@@ -57,16 +76,18 @@ class FetchFAA
     public static function get_current_date()
     {
         $dates = self::get_available_dates();
-        if (strtotime($dates[0]) > time()) {
-            return $dates[1];
-        }
-        return $dates[0];
+        return strtotime($dates[0]) > time() ? $dates[1] : $dates[0];
     }
 
-    public static function get_current_data_file_url()
+    public static function get_data_file_url(string $date)
     {
-        $date = self::get_current_date();
-        $date = date('d_M_Y', strtotime($date));
-        return str_replace('DD_Mon_YYYY', $date, self::DATA_FILE);
+        return str_replace('DD_Mon_YYYY', date('d_M_Y', strtotime($date)), self::DATA_FILE);
+    }
+
+    public static function download_data_file(string $save_path, ?string $date = null)
+    {
+        if (!$date) $date = self::get_current_date();
+        $url = self::get_data_file_url($date);
+        return HTTPS::download($url, $save_path, self::HEADERS);
     }
 }

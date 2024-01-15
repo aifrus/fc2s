@@ -2,8 +2,11 @@
 
 namespace Aifrus\Fc2s;
 
-use Aifrus\Fc2s\FetchFAA;
-
 require_once(__DIR__ . '/vendor/autoload.php');
 
-print_r(FetchFAA::get_current_data_file_url());
+$res = FetchFAA::fetch_current();
+if (!$res) {
+    echo "Failed to fetch FAA data.\n";
+    exit(1);
+}
+echo "FAA data fetched to $res\n";
