@@ -88,7 +88,7 @@ class Schema
         $columnDefs = [];
 
         foreach ($columns as $column) {
-            $columnDefs[] = "`{$column['name']}` {$column['type']}" . ($column['nullable'] ? '' : ' NOT NULL');
+            $columnDefs[] = "`{trim($column['name']})` {$column['type']}" . ($column['nullable'] ? '' : ' NOT NULL');
         }
 
         $sql .= implode(', ', $columnDefs);
