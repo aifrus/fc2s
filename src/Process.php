@@ -67,6 +67,7 @@ class Process
         $query = "USE {$db_name}; START TRANSACTION;";
         foreach ($statements as $statement) $query .= $statement;
         $query .= 'COMMIT;';
+        echo ($query . "\n");
         $this->sql->multi_query($query);
         if ($this->sql->error) throw new SqlException("Failed to execute statements: " . $this->sql->error);
         return true;
