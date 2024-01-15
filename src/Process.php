@@ -64,12 +64,8 @@ class Process
 
     public function execute_statements(string $db_name, array $statements): bool
     {
-        $query = "USE `{$db_name}`; START TRANSACTION;";
-        foreach ($statements as $statement) $query .= $statement;
-        $query .= 'COMMIT;';
-        echo ($query . "\n");
-        $this->sql->multi_query($query);
-        if ($this->sql->error) throw new SqlException("Failed to execute statements: " . $this->sql->error);
+        $this->sql->select_db($db_name);
+        foreach ($statements as $statement) $this->sql->query($statement) or throw new SqlException("Failed to execute statement: " . $this->sql->error);
         return true;
     }
 
