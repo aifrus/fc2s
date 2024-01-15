@@ -22,7 +22,7 @@ class Process
     private ?string $prefix = null;
     private ?string $export_dir = null;
 
-    public function __construct(array $config)
+    public function __construct(private array $config)
     {
         $this->export_dir = $config['export_dir'] ?? null;
         if (!$this->export_dir) throw new ProcessException("Missing export directory.");
@@ -59,6 +59,7 @@ class Process
         $statements = Schema::generate($tmp_dir) or throw new SchemaException("Failed to generate schema.");
         $db_name = $this->create_database($date) or throw new SqlException("Failed to create database.");
         $this->execute_statements($db_name, $statements) or throw new SqlException("Failed to execute statements.");
+        $this->export_database($db_name) or throw new ProcessException("Failed to export database.");
         return true;
     }
 
@@ -108,6 +109,18 @@ class Process
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
         $this->sql->query($query);
         if ($this->sql->error) throw new SqlException("Failed to create datasets table: " . $this->sql->error);
+        return true;
+    }
+
+    public function export_database(string $db_name): bool
+    {
+        $export_file = $this->export_dir . '/' . $db_name . '.sql';
+        $command = "mysqldump -u {$this->config['user']} -p{$this->config['pass']} -h {$this->config['host']} $db_name > $export_file";
+        exec($command, $output, $return_var);
+        if ($return_var !== 0) throw new ProcessException("Failed to export database: " . implode("\n", $output));
+        $zip_name = $this->export_dir . '/' . $db_name . '.zip';
+        Zip::create($zip_name, [$export_file]) or throw new ZipException("Failed to create zip file.");
+        unlink($export_file);
         return true;
     }
 }

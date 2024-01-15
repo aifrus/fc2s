@@ -43,4 +43,23 @@ class Zip
         $zip->close();
         return true;
     }
+
+    public static function create(string $zip_path, array $files): bool
+    {
+        $zip = new \ZipArchive();
+        if ($zip->open($zip_path, \ZipArchive::CREATE) !== true) {
+            throw new ZipException("Failed to create zip file: $zip_path");
+        }
+
+        foreach ($files as $file) {
+            if (!file_exists($file)) {
+                throw new FileNotFoundException("File does not exist: $file");
+            }
+
+            $zip->addFile($file, basename($file));
+        }
+
+        $zip->close();
+        return true;
+    }
 }
