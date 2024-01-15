@@ -9,6 +9,6 @@ class FetchFAA
 
     public static function get_home_page_html()
     {
-        return file_get_contents(self::HOME_PAGE);
+        return HTTPS::get(self::HOME_PAGE);
     }
 }
