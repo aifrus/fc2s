@@ -82,7 +82,7 @@ class Process
         $db_name = $this->prefix . $date;
         $this->sql->query("DROP DATABASE IF EXISTS `$db_name`");
         if ($this->sql->error) throw new SqlException("Failed to drop database: " . $this->sql->error);
-        $this->sql->query("CREATE DATABASE `$db_name`");
+        $this->sql->query("CREATE DATABASE `$db_name` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
         if ($this->sql->error) throw new SqlException("Failed to create database: " . $this->sql->error);
         $preview = strtotime($date) > time() ? 1 : 0;
         $query = "INSERT INTO `" . $this->prefix . self::INDEX_DB . "`.`" . self::INDEX_TABLE . "` (`name`, `preview`) VALUES ('$db_name', $preview) ON DUPLICATE KEY UPDATE `preview` = $preview";
@@ -95,7 +95,7 @@ class Process
     {
         $name_len = strlen($this->prefix) + 10;
         $index_db = $this->prefix . self::INDEX_DB;
-        $query = "CREATE DATABASE IF NOT EXISTS `$index_db`";
+        $query = "CREATE DATABASE IF NOT EXISTS `$index_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
         $this->sql->query($query);
         if ($this->sql->error) throw new SqlException("Failed to create index database: " . $this->sql->error);
         $this->sql->select_db($index_db);
@@ -106,11 +106,12 @@ class Process
                 `preview` tinyint(1) NOT NULL,
                 PRIMARY KEY (`id`),
                 UNIQUE KEY `name` (`name`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
         $this->sql->query($query);
         if ($this->sql->error) throw new SqlException("Failed to create datasets table: " . $this->sql->error);
         return true;
     }
+
     public function export_database(string $db_name): bool
     {
         $export_file = $this->export_dir . '/' . $db_name . '.sql';
