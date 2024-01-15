@@ -95,6 +95,7 @@ class Process
 
     public function create_index_database(): bool
     {
+        $name_len = strlen($this->prefix) + 10;
         $index_db = $this->prefix . self::INDEX_DB;
         $query = "CREATE DATABASE IF NOT EXISTS `$index_db`";
         $this->sql->query($query);
@@ -103,7 +104,7 @@ class Process
         $query = "CREATE TABLE IF NOT EXISTS `" . self::INDEX_TABLE . "` (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
                 `imported` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-                `name` varchar(10) NOT NULL,
+                `name` varchar({$name_len}) NOT NULL,
                 `preview` tinyint(1) NOT NULL,
                 PRIMARY KEY (`id`),
                 UNIQUE KEY `name` (`name`)
