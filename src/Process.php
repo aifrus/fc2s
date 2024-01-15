@@ -64,7 +64,7 @@ class Process
 
     public function execute_statements(string $db_name, array $statements): bool
     {
-        $query = "USE {$db_name}; START TRANSACTION;";
+        $query = "USE `{$db_name}`; START TRANSACTION;";
         foreach ($statements as $statement) $query .= $statement;
         $query .= 'COMMIT;';
         echo ($query . "\n");

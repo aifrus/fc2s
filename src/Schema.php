@@ -84,11 +84,11 @@ class Schema
 
     private static function generate_sql(string $tableName, array $columns): string
     {
-        $sql = "CREATE TABLE {$tableName} (";
+        $sql = "CREATE TABLE `{$tableName}` (";
         $columnDefs = [];
 
         foreach ($columns as $column) {
-            $columnDefs[] = "{$column['name']} {$column['type']}" . ($column['nullable'] ? '' : ' NOT NULL');
+            $columnDefs[] = "`{$column['name']}` {$column['type']}" . ($column['nullable'] ? '' : ' NOT NULL');
         }
 
         $sql .= implode(', ', $columnDefs);
