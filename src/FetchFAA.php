@@ -28,4 +28,27 @@ class FetchFAA
     {
         return HTTPS::get(self::HOME_PAGE, self::HEADERS);
     }
+
+    public static function get_available_dates()
+    {
+        $html = self::get_home_page_html();
+
+        $dom = new \DOMDocument();
+        @$dom->loadHTML($html);
+        $xpath = new \DOMXPath($dom);
+
+        $dates = [];
+
+        // Get dates from the "Preview", "Current", and "Archives" sections
+        foreach (['Preview', 'Current', 'Archives'] as $section) {
+            $nodes = $xpath->query("//h2[text()='$section']/following-sibling::ul[1]/li");
+            foreach ($nodes as $node) {
+                if (preg_match('/\d{4}-\d{2}-\d{2}/', $node->textContent, $matches)) {
+                    $dates[] = $matches[0];
+                }
+            }
+        }
+
+        return $dates;
+    }
 }
