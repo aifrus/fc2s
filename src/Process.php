@@ -14,6 +14,7 @@ class Process
         $statements = Schema::generate($data_dir);
         if (!$statements) throw new ProcessException("Failed to generate schema.");
 
+        print_r($statements);
         return true;
     }
 }
