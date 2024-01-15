@@ -3,10 +3,30 @@
 namespace Aifrus\Fc2s;
 
 use Aifrus\Fc2s\Exceptions\ProcessException;
+use mysqli;
 
 class Process
 {
-    public static function execute(array $sql_config, string $export_dir): bool
+    private ?mysqli $sql = null;
+    private ?string $export_dir = null;
+
+    public function __construct(array $config)
+    {
+        $this->export_dir = $config['export_dir'] ?? null;
+        $host = $config['host'] ?? null;
+        $user = $config['user'] ?? null;
+        $pass = $config['pass'] ?? null;
+        if (!$host || !$user || !$pass) throw new ProcessException("Missing database credentials.");
+        $this->sql = new mysqli($host, $user, $pass);
+        if ($this->sql->connect_error) throw new ProcessException("Failed to connect to database: {$this->sql->connect_error}");
+    }
+
+    public static function execute(array $config): bool
+    {
+        return (new self($config))->process();
+    }
+
+    public function process(): bool
     {
         $data_dir = FetchFAA::fetch_current();
         if (!$data_dir) throw new ProcessException("Failed to fetch FAA data.");

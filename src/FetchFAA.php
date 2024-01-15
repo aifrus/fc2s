@@ -5,7 +5,7 @@ namespace Aifrus\Fc2s;
 class FetchFAA
 {
     const HOME_PAGE = 'https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription/';
-    const DATA_FILE = 'https://nfdc.faa.gov/webContent/28DaySub/extra/DD_Mon_YYYY_CSV.zip';
+    const DATA_FILE = 'https://nfdc.faa.gov/webContent/28DaySub/extra/d_M_Y_CSV.zip';
     const HEADERS = [
         "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "Accept-Encoding: gzip, deflate, br",
@@ -81,7 +81,7 @@ class FetchFAA
 
     public static function get_data_file_url(string $date)
     {
-        return str_replace('DD_Mon_YYYY', date('d_M_Y', strtotime($date)), self::DATA_FILE);
+        return str_replace('d_M_Y', date('d_M_Y', strtotime($date)), self::DATA_FILE);
     }
 
     public static function download_data_file(string $save_path, ?string $date = null)
