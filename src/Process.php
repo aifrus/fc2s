@@ -111,11 +111,10 @@ class Process
         if ($this->sql->error) throw new SqlException("Failed to create datasets table: " . $this->sql->error);
         return true;
     }
-
     public function export_database(string $db_name): bool
     {
         $export_file = $this->export_dir . '/' . $db_name . '.sql';
-        $command = "mysqldump -u {$this->config['user']} -p{$this->config['pass']} -h {$this->config['host']} $db_name > $export_file";
+        $command = "mysqldump --compatible=ansi --skip-comments -u {$this->config['user']} -p{$this->config['pass']} -h {$this->config['host']} $db_name > $export_file";
         exec($command, $output, $return_var);
         if ($return_var !== 0) throw new ProcessException("Failed to export database: " . implode("\n", $output));
         $zip_name = $this->export_dir . '/' . $db_name . '.zip';
