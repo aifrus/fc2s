@@ -4,14 +4,16 @@ namespace Aifrus\Fc2s;
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
-mkdir(__DIR__ . '/export');
+$export_dir = __DIR__ . '/export';
+mkdir($export_dir);
 
-$res = Process::execute([
+$config = [
     'host' => '127.0.0.1',
     'user' => 'aifr',
     'pass' => 'aifr',
-    'export_dir' => __DIR__ . '/export',
-]);
+    'prefix' => 'NASR_',
+    'export_dir' => $export_dir,
+];
 
-if (!$res) die("Failed to process\n");
+if (!Process::execute($config)) die("Failed to process\n");
 echo "Success\n";

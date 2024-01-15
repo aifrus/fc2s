@@ -24,53 +24,9 @@ class FetchFAA
         "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     ];
 
-    public static function fetch_current(): string|false
-    {
-        $tmp_dir = sys_get_temp_dir() . '/fc2s_' . time() . '_' . rand(10000000, 99999999);
-        mkdir($tmp_dir);
-        return self::fetch(self::get_current_date(), $tmp_dir);
-    }
-
-    public static function fetch(string $date, string $tmp_dir): string|false
-    {
-        $url = self::get_data_file_url($date);
-        $zip_path = $tmp_dir . '/' . basename($url);
-        $res = HTTPS::download($url, $zip_path, self::HEADERS);
-        if (!$res) return false;
-        $res = Zip::extract_all($zip_path, $tmp_dir);
-        if (!$res) return false;
-        unlink($zip_path);
-        return $tmp_dir;
-    }
-
     public static function get_home_page_html()
     {
         return HTTPS::get(self::HOME_PAGE, self::HEADERS);
-    }
-
-    public static function get_available_dates()
-    {
-        $html = self::get_home_page_html();
-
-        $dom = new \DOMDocument();
-        @$dom->loadHTML($html);
-        $xpath = new \DOMXPath($dom);
-
-        $dates = [];
-
-        // Get dates from the "Preview", "Current", and "Archives" sections
-        foreach (['Preview', 'Current', 'Archives'] as $section) {
-            $nodes = $xpath->query("//h2[text()='$section']/following-sibling::ul[1]/li");
-            foreach ($nodes as $node) {
-                if (preg_match('/\b(\w+ \d{1,2}, \d{4})\b/', $node->textContent, $matches)) {
-                    // Convert the date to the format YYYY-MM-DD
-                    $date = date('Y-m-d', strtotime($matches[0]));
-                    $dates[] = $date;
-                }
-            }
-        }
-
-        return $dates;
     }
 
     public static function get_current_date()
@@ -84,10 +40,16 @@ class FetchFAA
         return str_replace('d_M_Y', date('d_M_Y', strtotime($date)), self::DATA_FILE);
     }
 
-    public static function download_data_file(string $save_path, ?string $date = null)
+    public static function get_available_dates()
     {
-        if (!$date) $date = self::get_current_date();
-        $url = self::get_data_file_url($date);
-        return HTTPS::download($url, $save_path, self::HEADERS);
+        $dom = new \DOMDocument();
+        @$dom->loadHTML(self::get_home_page_html());
+        $xpath = new \DOMXPath($dom);
+        $dates = [];
+        foreach (['Preview', 'Current', 'Archives'] as $section) {
+            $nodes = $xpath->query("//h2[text()='$section']/following-sibling::ul[1]/li");
+            foreach ($nodes as $node) if (preg_match('/\b(\w+ \d{1,2}, \d{4})\b/', $node->textContent, $matches)) $dates[] = date('Y-m-d', strtotime($matches[0]));
+        }
+        return $dates;
     }
 }

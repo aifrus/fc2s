@@ -20,7 +20,7 @@ class Zip
      * @throws DirectoryCreationException If the directory cannot be created.
      * @throws ZipException If the zip file cannot be opened or extracted.
      */
-    public static function extract_all(string $zip_path, string $extract_path): bool
+    public static function extract(string $zip_path, string $extract_path): bool
     {
         if (!file_exists($zip_path)) {
             throw new FileNotFoundException("Zip file does not exist: $zip_path");
