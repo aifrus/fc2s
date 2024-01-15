@@ -60,6 +60,7 @@ class Process
         $db_name = $this->create_database($date) or throw new SqlException("Failed to create database.");
         $this->execute_statements($db_name, $statements) or throw new SqlException("Failed to execute statements.");
         $this->export_database($db_name) or throw new ProcessException("Failed to export database.");
+        $this->delete_directory($tmp_dir) or throw new DirectoryCreationException("Failed to delete temporary directory.");
         return true;
     }
 
@@ -122,5 +123,16 @@ class Process
         Zip::create($zip_name, [$export_file]) or throw new ZipException("Failed to create zip file.");
         unlink($export_file);
         return true;
+    }
+
+    public function delete_directory(string $dir): bool
+    {
+        $files = array_diff(scandir($dir), ['.', '..']);
+        foreach ($files as $file) {
+            $path = $dir . '/' . $file;
+            if (is_dir($path)) $this->delete_directory($path);
+            else unlink($path) or throw new FileWriteException("Failed to delete file: $path");
+        }
+        return rmdir($dir) or throw new DirectoryCreationException("Failed to delete directory: $dir");
     }
 }
