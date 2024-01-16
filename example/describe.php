@@ -1,5 +1,5 @@
 <?php
-$mysqli = new mysqli("localhost", "aifr", "aifr", "NASR_2023-12-28");
+$mysqli = new mysqli("127.0.0.1", "aifr", "aifr", "NASR_2023-12-28");
 
 if ($mysqli->connect_errno) {
     echo "Failed to connect to MySQL: " . $mysqli->connect_error;
