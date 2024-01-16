@@ -54,8 +54,8 @@ class Process
         //$date = FetchFAA::get_current_date() or throw new CurlException("Failed to get current dataset date.");
         $dates = FetchFAA::get_available_dates() or throw new CurlException("Failed to get available dataset dates.");
         foreach (array_reverse($dates) as $date) {
-            echo ("Processing $date...\n");
             $url = FetchFAA::get_data_file_url($date) or throw new CurlException("Failed to get dataset URL.");
+            echo ("Downloading $url...\n");
             $zip = $tmp_dir . '/' . basename($url) or throw new FileWriteException("Failed to get dataset ZIP path.");
             HTTPS::download($url, $zip, FetchFAA::HEADERS) or throw new CurlException("Failed to download dataset.");
             Zip::extract($zip, $tmp_dir) or throw new ZipException("Failed to extract dataset.");
