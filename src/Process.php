@@ -67,7 +67,7 @@ class Process
     public function execute_statements(string $db_name, array $statements): bool
     {
         $this->sql->select_db($db_name);
-        foreach ($statements as $statement) $this->sql->query($statement) or throw new SqlException("Failed to execute statement: " . $this->sql->error);
+        foreach ($statements as $statement) $this->sql->multi_query($statement) or throw new SqlException("Failed to execute statement: " . $this->sql->error);
         return true;
     }
 
