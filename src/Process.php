@@ -60,10 +60,13 @@ class Process
 
     public function process_all_available(): bool
     {
-        $error = false;
+        $success = 0;
+        $error = 0;
         $dates = FetchFAA::get_available_dates() or throw new CurlException("Failed to get available dataset dates.");
         foreach (array_reverse($dates) as $date) {
-            $error = $error || !$this->process_date($date);
+            $res = $this->process_date($date);
+            if ($res) $success++;
+            else $error++;
         }
         return !$error;
     }
