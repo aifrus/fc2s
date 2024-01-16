@@ -19,5 +19,6 @@ This project, FC2S (FAA CSV to SQL), is designed to convert Federal Aviation Adm
 6. Export the data as individual .sql files by table and also one large .sql file with all the tables.
 7. Zip the .sql files and make them available under the MIT License.
 
-## Usage
+## Notes
 
+You must set `mysqli.allow_local_infile` in `php.ini` to allow `LOAD DATA LOCAL INFILE` operations within PHP scripts.
