@@ -54,17 +54,21 @@ class Process
         //$date = FetchFAA::get_current_date() or throw new CurlException("Failed to get current dataset date.");
         $dates = FetchFAA::get_available_dates() or throw new CurlException("Failed to get available dataset dates.");
         foreach (array_reverse($dates) as $date) {
-            $url = FetchFAA::get_data_file_url($date) or throw new CurlException("Failed to get dataset URL.");
-            echo ("Downloading $url...\n");
-            $zip = $tmp_dir . '/' . basename($url) or throw new FileWriteException("Failed to get dataset ZIP path.");
-            HTTPS::download($url, $zip, FetchFAA::HEADERS) or throw new CurlException("Failed to download dataset.");
-            Zip::extract($zip, $tmp_dir) or throw new ZipException("Failed to extract dataset.");
-            $this->set_permissions($tmp_dir) or throw new DirectoryCreationException("Failed to set permissions.");
-            $statements = Schema::generate($tmp_dir) or throw new SchemaException("Failed to generate schema.");
-            $db_name = $this->create_database($date) or throw new SqlException("Failed to create database.");
-            $this->execute_statements($db_name, $statements) or throw new SqlException("Failed to execute statements.");
-            $this->export_database($db_name) or throw new ProcessException("Failed to export database.");
-            $this->delete_directory($tmp_dir) or throw new DirectoryCreationException("Failed to delete temporary directory.");
+            try {
+                $url = FetchFAA::get_data_file_url($date) or throw new CurlException("Failed to get dataset URL.");
+                echo ("Downloading $url...\n");
+                $zip = $tmp_dir . '/' . basename($url) or throw new FileWriteException("Failed to get dataset ZIP path.");
+                HTTPS::download($url, $zip, FetchFAA::HEADERS) or throw new CurlException("Failed to download dataset.");
+                Zip::extract($zip, $tmp_dir) or throw new ZipException("Failed to extract dataset.");
+                $this->set_permissions($tmp_dir) or throw new DirectoryCreationException("Failed to set permissions.");
+                $statements = Schema::generate($tmp_dir) or throw new SchemaException("Failed to generate schema.");
+                $db_name = $this->create_database($date) or throw new SqlException("Failed to create database.");
+                $this->execute_statements($db_name, $statements) or throw new SqlException("Failed to execute statements.");
+                $this->export_database($db_name) or throw new ProcessException("Failed to export database.");
+                $this->delete_directory($tmp_dir) or throw new DirectoryCreationException("Failed to delete temporary directory.");
+            } catch (\Throwable $e) {
+                echo $e->getMessage() . "\n";
+            }
         }
         return true;
     }
