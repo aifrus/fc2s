@@ -54,17 +54,15 @@ class Process
 
     public function process_latest(): bool
     {
-        $error = false;
         $date = FetchFAA::get_available_dates()[0] or throw new CurlException("Failed to get current dataset date.");
-        $error = $error || $this->process_date($date);
-        return !$error;
+        return $this->process_date($date);
     }
 
     public function process_all_available(): bool
     {
         $error = false;
         $dates = FetchFAA::get_available_dates() or throw new CurlException("Failed to get available dataset dates.");
-        foreach (array_reverse($dates) as $date) $error = $error || $this->process_date($date);
+        foreach (array_reverse($dates) as $date) $error = $error || !$this->process_date($date);
         return !$error;
     }
 
