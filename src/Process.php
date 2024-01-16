@@ -115,13 +115,13 @@ class Process
 
     public function export_database(string $db_name): bool
     {
-        $export_file = $this->export_dir . '/' . $db_name . '.sql';
+        $sql_file = $this->export_dir . '/' . $db_name . '.sql';
+        $zip_file = $sql_file . '.zip';
         $command = "mysqldump --compatible=ansi --skip-comments -u {$this->config['user']} -p{$this->config['pass']} -h {$this->config['host']} $db_name > $export_file";
         exec($command, $output, $return_var);
         if ($return_var !== 0) throw new ProcessException("Failed to export database: " . implode("\n", $output));
-        $zip_name = $this->export_dir . '/' . $db_name . '.zip';
-        Zip::create($zip_name, [$export_file]) or throw new ZipException("Failed to create zip file.");
-        unlink($export_file);
+        Zip::create($zip_file, [$sql_file]) or throw new ZipException("Failed to create zip file.");
+        unlink($sql_file) or throw new FileWriteException("Failed to delete SQL file.");
         return true;
     }
 

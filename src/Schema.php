@@ -94,6 +94,10 @@ class Schema
         $sql .= implode(', ', $columnDefs);
         $sql .= ");";
 
+        // Add BULK INSERT statement
+        $csvFilePath = "<path_to_csv_directory>/{$tableName}.csv";
+        $sql .= "BULK INSERT `{$tableName}` FROM '{$csvFilePath}' WITH (FORMAT = 'CSV', FIRSTROW = 2);";
+
         return $sql;
     }
 
