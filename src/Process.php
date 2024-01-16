@@ -56,6 +56,7 @@ class Process
         $zip = $tmp_dir . '/' . basename($url) or throw new FileWriteException("Failed to get dataset ZIP path.");
         HTTPS::download($url, $zip, FetchFAA::HEADERS) or throw new CurlException("Failed to download dataset.");
         Zip::extract($zip, $tmp_dir) or throw new ZipException("Failed to extract dataset.");
+        $this->set_permissions($tmp_dir) or throw new DirectoryCreationException("Failed to set permissions.");
         $statements = Schema::generate($tmp_dir) or throw new SchemaException("Failed to generate schema.");
         $db_name = $this->create_database($date) or throw new SqlException("Failed to create database.");
         $this->execute_statements($db_name, $statements) or throw new SqlException("Failed to execute statements.");
@@ -90,6 +91,12 @@ class Process
         $tmp_dir = sys_get_temp_dir() . '/fc2s_' . time() . '_' . rand(10000000, 99999999);
         if (!mkdir($tmp_dir)) throw new DirectoryCreationException("Failed to create temporary directory.");
         return $tmp_dir;
+    }
+
+    public function set_permissions(string $directory): bool
+    {
+        foreach (scandir($directory) as $file) if ($file != '.' && $file != '..') chmod($directory . '/' . $file, 0644) or throw new DirectoryCreationException("Failed to set permissions.");
+        return true;
     }
 
     public function create_database(string $date): string
