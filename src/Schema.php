@@ -97,7 +97,7 @@ class Schema
         $sql .= ");";
 
         // Add BULK INSERT statement
-        $sql .= "BULK INSERT `{$tableName}` FROM '{$table_csv}' WITH (FORMAT = 'CSV', FIRSTROW = 2);";
+        $sql .= "LOAD DATA INFILE '{$table_csv}' INTO TABLE `{$tableName}` FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 ROWS;";
 
         return $sql;
     }
