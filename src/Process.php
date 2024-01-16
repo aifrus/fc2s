@@ -56,7 +56,7 @@ class Process
     {
         $error = false;
         $date = FetchFAA::get_available_dates()[0] or throw new CurlException("Failed to get current dataset date.");
-        $error = $error || $this->process_date($date) or throw new ProcessException("Failed to process date: $date");
+        $error = $error || $this->process_date($date);
         return !$error;
     }
 
@@ -64,7 +64,7 @@ class Process
     {
         $error = false;
         $dates = FetchFAA::get_available_dates() or throw new CurlException("Failed to get available dataset dates.");
-        foreach (array_reverse($dates) as $date) $error = $error || $this->process_date($date) or throw new ProcessException("Failed to process date: $date");
+        foreach (array_reverse($dates) as $date) $error = $error || $this->process_date($date);
         return !$error;
     }
 
