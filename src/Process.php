@@ -70,9 +70,10 @@ class Process
 
     public function process_date(string $date): bool
     {
+        echo ("Processing $date\n");
         $error = false;
+        $tmp_dir = $this->make_tmp_folder() or throw new DirectoryCreationException("Failed to create temporary directory.");
         try {
-            $tmp_dir = $this->make_tmp_folder() or throw new DirectoryCreationException("Failed to create temporary directory.");
             $url = FetchFAA::get_data_file_url($date) or throw new CurlException("Failed to get dataset URL.");
             $zip = $tmp_dir . '/' . basename($url) or throw new FileWriteException("Failed to get dataset ZIP path.");
             HTTPS::download($url, $zip, FetchFAA::HEADERS) or throw new CurlException("Failed to download dataset.");
@@ -82,11 +83,11 @@ class Process
             $db_name = $this->create_database($date) or throw new SqlException("Failed to create database.");
             $this->execute_statements($db_name, $statements) or throw new SqlException("Failed to execute statements.");
             $this->export_database($db_name) or throw new ProcessException("Failed to export database.");
-            $this->delete_directory($tmp_dir) or throw new DirectoryCreationException("Failed to delete temporary directory.");
         } catch (\Throwable $e) {
             echo $e->getMessage() . "\n";
             $error = true;
         }
+        $this->delete_directory($tmp_dir) or throw new DirectoryCreationException("Failed to delete temporary directory.");
         return !$error;
     }
 
