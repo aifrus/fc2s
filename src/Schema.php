@@ -74,7 +74,7 @@ class Schema
 
         // Generate SQL statement for the last table
         if (!empty($columns)) {
-            $statements[] = self::generate_sql($tableName, $columns);
+            $statements[] = self::generate_sql($tableName, $columns, $schema_file);
         }
 
         fclose($handle);
@@ -84,6 +84,8 @@ class Schema
 
     private static function generate_sql(string $tableName, array $columns, string $schema_file): string
     {
+        $schema_path = dirname($schema_file);
+        $table_csv = "{$schema_path}/{$tableName}.csv";
         $sql = "CREATE TABLE `{$tableName}` (";
         $columnDefs = [];
 
@@ -95,7 +97,7 @@ class Schema
         $sql .= ");";
 
         // Add BULK INSERT statement
-        $sql .= "BULK INSERT `{$tableName}` FROM '{$schema_file}' WITH (FORMAT = 'CSV', FIRSTROW = 2);";
+        $sql .= "BULK INSERT `{$tableName}` FROM '{$table_csv}' WITH (FORMAT = 'CSV', FIRSTROW = 2);";
 
         return $sql;
     }
