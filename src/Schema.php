@@ -51,7 +51,7 @@ class Schema
                 if ($tableName !== $data[0]) {
                     // New table, generate SQL statement for previous table
                     if (!empty($columns)) {
-                        $statements[] = self::generate_sql($tableName, $columns);
+                        $statements[] = self::generate_sql($tableName, $columns, $schema_file);
                     }
 
                     // Reset for new table
@@ -82,7 +82,7 @@ class Schema
         return $statements;
     }
 
-    private static function generate_sql(string $tableName, array $columns): string
+    private static function generate_sql(string $tableName, array $columns, string $schema_file): string
     {
         $sql = "CREATE TABLE `{$tableName}` (";
         $columnDefs = [];
@@ -95,8 +95,7 @@ class Schema
         $sql .= ");";
 
         // Add BULK INSERT statement
-        $csvFilePath = "<path_to_csv_directory>/{$tableName}.csv";
-        $sql .= "BULK INSERT `{$tableName}` FROM '{$csvFilePath}' WITH (FORMAT = 'CSV', FIRSTROW = 2);";
+        $sql .= "BULK INSERT `{$tableName}` FROM '{$schema_file}' WITH (FORMAT = 'CSV', FIRSTROW = 2);";
 
         return $sql;
     }
