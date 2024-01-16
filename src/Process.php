@@ -67,7 +67,21 @@ class Process
     public function execute_statements(string $db_name, array $statements): bool
     {
         $this->sql->select_db($db_name);
-        foreach ($statements as $statement) $this->sql->multi_query($statement) or throw new SqlException("Failed to execute statement: " . $this->sql->error);
+        foreach ($statements as $statement) {
+            if ($this->sql->multi_query($statement)) {
+                do {
+                    // free result
+                    if ($result = $this->sql->store_result()) {
+                        $result->free();
+                    }
+                    // check if there are more query results from a previous call to mysqli::multi_query()
+                } while ($this->sql->more_results() && $this->sql->next_result());
+            }
+
+            if ($this->sql->errno) {
+                throw new SqlException("Failed to execute statement: " . $this->sql->error);
+            }
+        }
         return true;
     }
 
@@ -117,7 +131,7 @@ class Process
     {
         $sql_file = $this->export_dir . '/' . $db_name . '.sql';
         $zip_file = $sql_file . '.zip';
-        $command = "mysqldump --compatible=ansi --skip-comments -u {$this->config['user']} -p{$this->config['pass']} -h {$this->config['host']} $db_name > $export_file";
+        $command = "mysqldump --compatible=ansi --skip-comments -u {$this->config['user']} -p{$this->config['pass']} -h {$this->config['host']} $db_name > $sql_file";
         exec($command, $output, $return_var);
         if ($return_var !== 0) throw new ProcessException("Failed to export database: " . implode("\n", $output));
         Zip::create($zip_file, [$sql_file]) or throw new ZipException("Failed to create zip file.");
