@@ -15,5 +15,10 @@ $config = [
     'export_dir' => $export_dir,
 ];
 
-if (!Process::execute($config)) die("Failed to process\n");
+// Get All
+if (!Process::get_all($config)) die("Failed to process\n");
 echo "Success\n";
+
+// Get Latest
+// if (!Process::get_lastest($config)) die("Failed to process\n");
+// echo "Success\n";
