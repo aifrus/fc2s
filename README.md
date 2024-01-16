@@ -2,6 +2,8 @@
 
 This project, FC2S (FAA CSV to SQL), is designed to convert Federal Aviation Administration (FAA) data from Comma Separated Values (CSV) format to Structured Query Language (SQL). The intention of the project is to download the latest aeronautical data published by the FAA on a 28-day cycle, which they publish in CSV format. The process includes downloading the data, unzipping it, creating a new database, creating the tables (based on the current schema provided by the FAA with the download), importing the data, then exporting the data as individual .sql files by table and also one large .sql file with all the tables. The final step is to zip them up and make them available to anyone who needs the data in SQL format under the MIT License.
 
+FMI: https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription/
+
 If you are only looking for the final data in SQL format you can download every available cycle from our repository:
 
 https://github.com/aifrus/nasr_sql_zips
