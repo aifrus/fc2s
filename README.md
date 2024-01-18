@@ -22,8 +22,8 @@ https://github.com/aifrus/nasr_sql_zips
 3. Create a new database.
 4. Create tables based on the current schema the FAA provides with the download.
 5. Import the data into the newly created tables.
-6. Export the data as individual .sql files by table and one large .sql file with all the tables.
-7. Zip the .sql files and make them available under the MIT License.
+6. Export the data as one large .sql file with all the tables.
+7. Zip the .sql file.
 
 ## Notes
 
