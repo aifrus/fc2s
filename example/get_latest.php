@@ -20,5 +20,5 @@ $config = [
 //echo "Success\n";
 
 // Get Latest
-if (!Process::get_lastest($config)) die("Failed to process\n");
+if (!Process::get_latest($config)) die("Failed to process\n");
 echo "Success\n";

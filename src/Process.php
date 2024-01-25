@@ -42,7 +42,7 @@ class Process
         $this->create_index_database() or throw new SqlException("Failed to create index database.");
     }
 
-    public static function get_lastest(array $config): bool
+    public static function get_latest(array $config): bool
     {
         return (new self($config))->process_latest();
     }
@@ -55,6 +55,12 @@ class Process
     public function process_latest(): bool
     {
         $date = FetchFAA::get_available_dates()[0] or throw new CurlException("Failed to get current dataset date.");
+        return $this->process_date($date);
+    }
+
+    public function process_current(): bool
+    {
+        $date = FetchFAA::get_current_date() or throw new CurlException("Failed to get current dataset date.");
         return $this->process_date($date);
     }
 
