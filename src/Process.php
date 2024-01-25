@@ -47,6 +47,11 @@ class Process
         return (new self($config))->process_latest();
     }
 
+    public static function get_current(array $config): bool
+    {
+        return (new self($config))->process_current();
+    }
+
     public static function get_all(array $config): bool
     {
         return (new self($config))->process_all_available();
