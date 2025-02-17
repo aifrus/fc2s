@@ -57,7 +57,7 @@ class FetchFAA
     public static function getCurrentDate(): string
     {
         $dates = self::getAvailableDates();
-        return strtotime($dates[]) > time() ? $dates[1] : $dates[0];
+        return strtotime($dates[0]) > time() ? $dates[1] : $dates[0];
     }
 
     /**
