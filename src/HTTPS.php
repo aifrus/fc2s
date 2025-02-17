@@ -37,7 +37,7 @@ class HTTPS
         if ($response === false) {
             $error = curl_error($ch);
             curl_close($ch);
-            echo ("WARNING: cURL error occurred: $error");
+            echo ("WARNING: cURL error occurred: $error\n");
         }
 
         curl_close($ch);
