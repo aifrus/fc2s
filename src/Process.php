@@ -109,6 +109,7 @@ class Process
     {
         $this->sql->select_db($db_name);
         foreach ($statements as $statement) {
+            if (!$statement) continue;
             if ($this->sql->multi_query($statement)) {
                 do {
                     // free result
