@@ -9,8 +9,8 @@ $export_dir = __DIR__ . '/export';
 
 $config = [
     'host' => '127.0.0.1',
-    'user' => 'aifr',
-    'pass' => 'aifr',
+    'user' => 'nasr',
+    'pass' => 'nasr',
     'prefix' => 'NASR_',
     'export_dir' => $export_dir,
 ];
