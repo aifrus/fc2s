@@ -33,10 +33,6 @@ To install the package, run the following command:
 composer require aifrus/fc2s
 ```
 
-```bash
-composer require aifrus/fc2s
-```
-
 ## Usage Example
 
 Below is an example of how to use the package to get the current data:
@@ -46,11 +42,13 @@ Below is an example of how to use the package to get the current data:
 
 namespace Aifrus\Fc2s;
 
-require_once(__DIR__ . '\/..\/vendor\/autoload.php');
+require_once(__DIR__ . '/../vendor/autoload.php');
 
-$export_dir = __DIR__ . '\/export';
+// where do you want to save your exported zip?
+$export_dir = __DIR__ . '/export';
 @mkdir($export_dir);
 
+// your SQL database credentials
 $config = [
     'host' => '127.0.0.1',
     'user' => 'nasr',
@@ -59,11 +57,10 @@ $config = [
     'export_dir' => $export_dir,
 ];
 
-// Get Latest
 if (!Process::get_current($config)) die("Failed to process\n");
 echo "Success\n";
 ```
 
 ## Notes
 
-You must set `mysqli.allow_local_infile` in `php.ini` to allow `LOAD DATA LOCAL INFILE` operations within PHP scripts.
+You must set `mysqli.allow_local_infile = On` in `php.ini` to allow `LOAD DATA LOCAL INFILE` operations within PHP scripts.
