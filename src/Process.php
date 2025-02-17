@@ -139,23 +139,33 @@ class Process
      */
     public function processDate(string $date): bool
     {
-        echo ("Processing $date\n");
+        echo ("Processing $date...\n");
         $error = false;
+        echo ("Making tmp folder...\n");
         $tmp_dir = $this->makeTmpFolder() or throw new DirectoryCreationException("Failed to create temporary directory.");
         try {
+            echo ("Fetching data file URL...\n");
             $url = FetchFAA::getDataFileUrl($date) or throw new CurlException("Failed to get dataset URL.");
+            echo ("Downloading dataset...\n");
             $zip = $tmp_dir . '/' . basename($url) or throw new FileWriteException("Failed to get dataset ZIP path.");
             HTTPS::download($url, $zip, FetchFAA::HEADERS) or throw new CurlException("Failed to download dataset.");
+            echo ("Extracting dataset...\n");
             Zip::extract($zip, $tmp_dir) or throw new ZipException("Failed to extract dataset.");
+            echo ("Setting permissions...\n");
             $this->setPermissions($tmp_dir) or throw new DirectoryCreationException("Failed to set permissions.");
+            echo ("Generating schema...\n");
             $statements = Schema::generate($tmp_dir) or throw new SchemaException("Failed to generate schema.");
+            echo ("Creating database...\n");
             $db_name = $this->createDatabase($date) or throw new SqlException("Failed to create database.");
+            echo ("Executing statements...\n");
             $this->executeStatements($db_name, $statements) or throw new SqlException("Failed to execute statements.");
+            echo ("Exporting database...\n");
             $this->exportDatabase($db_name) or throw new ProcessException("Failed to export database.");
         } catch (\Throwable $e) {
             echo $e->getMessage() . "\n";
             $error = true;
         }
+        echo ("Cleaning up...\n");
         $this->deleteDirectory($tmp_dir) or throw new DirectoryCreationException("Failed to delete temporary directory.");
         return !$error;
     }
