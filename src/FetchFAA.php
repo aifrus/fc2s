@@ -86,7 +86,7 @@ class FetchFAA
             $nodes = $xpath->query("//h2[text()='$section']/following-sibling::ul[1]/li");
             foreach ($nodes as $node) {
                 if (preg_match('/\b(\w+ \d{1,2}, \d{4})\b/', $node->textContent, $matches)) {
-                    $dates[] = date('Y-m-d', strtotime($matches[]));
+                    $dates[] = date('Y-m-d', strtotime($matches[0]));
                 }
             }
         }
