@@ -25,6 +25,45 @@ https://github.com/aifrus/nasr_sql_zips
 6. Export the data as one large .sql file with all the tables.
 7. Zip the .sql file.
 
+## Installation
+
+To install the package, run the following command:
+
+```bash
+composer require aifrus/fc2s
+```
+
+```bash
+composer require aifrus/fc2s
+```
+
+## Usage Example
+
+Below is an example of how to use the package to get the current data:
+
+```php
+<?php
+
+namespace Aifrus\Fc2s;
+
+require_once(__DIR__ . '\/..\/vendor\/autoload.php');
+
+$export_dir = __DIR__ . '\/export';
+@mkdir($export_dir);
+
+$config = [
+    'host' => '127.0.0.1',
+    'user' => 'nasr',
+    'pass' => 'nasr',
+    'prefix' => 'NASR_',
+    'export_dir' => $export_dir,
+];
+
+// Get Latest
+if (!Process::get_current($config)) die("Failed to process\n");
+echo "Success\n";
+```
+
 ## Notes
 
 You must set `mysqli.allow_local_infile` in `php.ini` to allow `LOAD DATA LOCAL INFILE` operations within PHP scripts.

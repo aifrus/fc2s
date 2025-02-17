@@ -14,5 +14,6 @@
             "email": "russell.purinton@gmail.com"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "stable",
+    "version": "1.0.0"
 }
