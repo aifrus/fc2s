@@ -86,6 +86,12 @@ class Schema
     {
         $schema_path = dirname($schema_file);
         $table_csv = "{$schema_path}/{$tableName}.csv";
+
+        if (!file_exists($table_csv)) {
+            echo ("Warning: Missing table CSV file: {$table_csv}\n");
+            return '';
+        }
+
         $sql = "CREATE TABLE `{$tableName}` (";
         $columnDefs = [];
 
