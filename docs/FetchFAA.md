@@ -4,37 +4,37 @@ The `FetchFAA` class provides methods to interact with FAA data sources, allowin
 
 ## Methods
 
-### get_home_page_html
+### getHomePageHtml
 
 Fetches the HTML content of the FAA home page.
 
 ```php
 use Aifrus\Fc2s\FetchFAA;
-$html = FetchFAA::get_home_page_html();
+$html = FetchFAA::getHomePageHtml();
 ```
 
-### getCurrent_date
+### getCurrentDate
 
 Retrieves the current dataset date.
 
 ```php
-$currentDate = FetchFAA::getCurrent_date();
+$currentDate = FetchFAA::getCurrentDate();
 ```
 
-### get_data_file_url
+### getDataFileUrl
 
 Generates the URL for a dataset file based on a given date.
 
 ```php
-$url = FetchFAA::get_data_file_url($date);
+$url = FetchFAA::getDataFileUrl($date);
 ```
 
-### get_available_dates
+### getAvailableDates
 
 Returns an array of available dataset dates.
 
 ```php
-$dates = FetchFAA::get_available_dates();
+$dates = FetchFAA::getAvailableDates();
 ```
 
 ## Usage

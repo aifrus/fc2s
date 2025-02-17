@@ -39,8 +39,8 @@ Developers can also use individual functions from the library for more granular 
 - **FetchFAA**: Use this class to retrieve FAA data URLs and available dates.
   ```php
   use Aifrus\Fc2s\FetchFAA;
-  $dates = FetchFAA::get_available_dates();
-  $url = FetchFAA::get_data_file_url($dates[0]);
+  $dates = FetchFAA::getAvailableDates();
+  $url = FetchFAA::getDataFileUrl($dates[0]);
   ```
 
 ### Handling HTTP Requests
