@@ -16,34 +16,34 @@ $statements = Schema::generate('/path/to/data');
 - **Parameters**:
   - `$data_dir`: The directory containing schema files.
 
-### get_schema_files
+### getSchemaFiles
 
 Retrieves schema files from a directory.
 
 ```php
-$files = Schema::get_schema_files('/path/to/data');
+$files = Schema::getSchemaFiles('/path/to/data');
 ```
 
 - **Parameters**:
   - `$data_dir`: The directory to search for schema files.
 
-### process_schema_files
+### processSchemaFiles
 
 Processes schema files to generate SQL statements.
 
 ```php
-$statements = Schema::process_schema_files($files);
+$statements = Schema::processSchemaFiles($files);
 ```
 
 - **Parameters**:
   - `$schema_files`: An array of schema file paths.
 
-### process_schema_file
+### processSchemaFile
 
 Processes a single schema file to generate SQL statements.
 
 ```php
-$statements = Schema::process_schema_file('/path/to/schema.csv');
+$statements = Schema::processSchemaFile('/path/to/schema.csv');
 ```
 
 - **Parameters**:

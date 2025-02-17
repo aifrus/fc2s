@@ -21,7 +21,7 @@ class Schema
      */
     public static function generate(string $data_dir): array|false
     {
-        return self::process_schema_files(self::get_schema_files($data_dir));
+        return self::processSchemaFiles(self::getSchemaFiles($data_dir));
     }
 
     /**
@@ -32,7 +32,7 @@ class Schema
      * @throws DirectoryNotFoundException If the directory does not exist.
      * @throws FileNotFoundException If no schema files are found.
      */
-    public static function get_schema_files(string $data_dir): array
+    public static function getSchemaFiles(string $data_dir): array
     {
         if (!is_dir($data_dir)) throw new DirectoryNotFoundException("Directory not found: {$data_dir}");
         $files = glob($data_dir . '/*_CSV_DATA_STRUCTURE.csv');
@@ -46,12 +46,12 @@ class Schema
      * @param array $schema_files An array of schema file paths.
      * @return array An array of SQL statements.
      */
-    public static function process_schema_files(array $schema_files): array
+    public static function processSchemaFiles(array $schema_files): array
     {
         $statements = [];
 
         foreach ($schema_files as $schema_file) {
-            $statements = array_merge($statements, self::process_schema_file($schema_file));
+            $statements = array_merge($statements, self::processSchemaFile($schema_file));
         }
 
         return $statements;
@@ -65,7 +65,7 @@ class Schema
      * @throws FileNotFoundException If the file cannot be opened.
      * @throws SchemaException If an unexpected data type is encountered.
      */
-    public static function process_schema_file(string $schema_file): array
+    public static function processSchemaFile(string $schema_file): array
     {
         $handle = fopen($schema_file, 'r');
         if (!$handle) throw new FileNotFoundException("File not found: {$schema_file}");
@@ -79,7 +79,7 @@ class Schema
                 if ($tableName !== $data[0]) {
                     // New table, generate SQL statement for previous table
                     if (!empty($columns)) {
-                        $statements[] = self::generate_sql($tableName, $columns, $schema_file);
+                        $statements[] = self::generateSql($tableName, $columns, $schema_file);
                     }
 
                     // Reset for new table
@@ -87,7 +87,7 @@ class Schema
                     $columns = [];
                 }
 
-                $mappedType = self::map_data_type($data[3], $data[2]);
+                $mappedType = self::mapDataType($data[3], $data[2]);
                 if ($mappedType === false) {
                     throw new SchemaException("Unexpected data type: {$data[3]} in {$schema_file}");
                 }
@@ -102,7 +102,7 @@ class Schema
 
         // Generate SQL statement for the last table
         if (!empty($columns)) {
-            $statements[] = self::generate_sql($tableName, $columns, $schema_file);
+            $statements[] = self::generateSql($tableName, $columns, $schema_file);
         }
 
         fclose($handle);
@@ -118,7 +118,7 @@ class Schema
      * @param string $schema_file The path to the schema file.
      * @return string The generated SQL statement.
      */
-    private static function generate_sql(string $tableName, array $columns, string $schema_file): string
+    private static function generateSql(string $tableName, array $columns, string $schema_file): string
     {
         $schema_path = dirname($schema_file);
         $table_csv = "{$schema_path}/{$tableName}.csv";
@@ -151,7 +151,7 @@ class Schema
      * @param string $maxLength The maximum length or precision of the data type.
      * @return string|false The mapped SQL data type or false if mapping fails.
      */
-    private static function map_data_type(string $type, string $maxLength): string|false
+    private static function mapDataType(string $type, string $maxLength): string|false
     {
         if ($type === 'NUMBER') {
             // Extract precision and scale from maxLength

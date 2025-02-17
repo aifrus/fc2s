@@ -27,7 +27,7 @@ $config = [
 ];
 
 // Fetch the current data
-if (!Process::get_current($config)) {
+if (!Process::getCurrent($config)) {
     die("Failed to process\n");
 }
 

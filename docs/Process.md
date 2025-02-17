@@ -14,29 +14,29 @@ To use the `Process` class, you need to prepare a configuration array with the f
 
 ## Methods
 
-### get_latest
+### getLatest
 
 Processes the latest available FAA data.
 
 ```php
 use Aifrus\Fc2s\Process;
-Process::get_latest($config);
+Process::getLatest($config);
 ```
 
-### get_current
+### getCurrent
 
 Processes the current FAA data.
 
 ```php
-Process::get_current($config);
+Process::getCurrent($config);
 ```
 
-### get_all
+### getAll
 
 Processes all available FAA data.
 
 ```php
-Process::get_all($config);
+Process::getAll($config);
 ```
 
 ## Workflow

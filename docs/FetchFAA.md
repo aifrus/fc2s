@@ -13,12 +13,12 @@ use Aifrus\Fc2s\FetchFAA;
 $html = FetchFAA::get_home_page_html();
 ```
 
-### get_current_date
+### getCurrent_date
 
 Retrieves the current dataset date.
 
 ```php
-$currentDate = FetchFAA::get_current_date();
+$currentDate = FetchFAA::getCurrent_date();
 ```
 
 ### get_data_file_url

@@ -19,15 +19,15 @@ The library offers a streamlined process for handling FAA data, which can be exe
    - To process the latest data:
      ```php
      use Aifrus\Fc2s\Process;
-     Process::get_latest($config);
+     Process::getLatest($config);
      ```
    - To process the current data:
      ```php
-     Process::get_current($config);
+     Process::getCurrent($config);
      ```
    - To process all available data:
      ```php
-     Process::get_all($config);
+     Process::getAll($config);
      ```
 
 ## Alacarte Usage

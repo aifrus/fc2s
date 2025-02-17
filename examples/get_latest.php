@@ -27,7 +27,7 @@ $config = [
 ];
 
 // Fetch the latest data
-if (!Process::get_latest($config)) {
+if (!Process::getLatest($config)) {
     die("Failed to process\n");
 }
 

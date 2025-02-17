@@ -57,7 +57,7 @@ $config = [
     'export_dir' => $export_dir,
 ];
 
-if (!Process::get_current($config)) die("Failed to process\n");
+if (!Process::getCurrent($config)) die("Failed to process\n");
 echo "Success\n";
 ```
 
