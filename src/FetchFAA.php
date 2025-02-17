@@ -46,7 +46,11 @@ class FetchFAA
      */
     public static function getHomePageHtml(): string
     {
-        return HTTPS::get(self::HOME_PAGE, self::HEADERS);
+        $html = HTTPS::get(self::HOME_PAGE, self::HEADERS);
+        if (empty(trim($html))) {
+            throw new \RuntimeException("Empty HTML content received from FAA home page.");
+        }
+        return $html;
     }
 
     /**
