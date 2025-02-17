@@ -61,6 +61,17 @@ if (!Process::get_current($config)) die("Failed to process\n");
 echo "Success\n";
 ```
 
+## Documentation
+
+For detailed documentation on using the library, refer to the following:
+
+- [Aifrus FC2S Library Overview](docs/README.md)
+- [Process Class](docs/Process.md)
+- [FetchFAA Class](docs/FetchFAA.md)
+- [HTTPS Class](docs/HTTPS.md)
+- [Schema Class](docs/Schema.md)
+- [Zip Class](docs/Zip.md)
+
 ## Notes
 
 You must set `mysqli.allow_local_infile = On` in `php.ini` to allow `LOAD DATA LOCAL INFILE` operations within PHP scripts.

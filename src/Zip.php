@@ -8,11 +8,15 @@ use Aifrus\Fc2s\Exceptions\{
     ZipException
 };
 
+/**
+ * Class Zip
+ * Provides methods for handling zip archives, including extraction and creation.
+ */
 class Zip
 {
     /**
      * Extracts all files from a zip archive to a specified path.
-     * 
+     *
      * @param string $zip_path Path to the zip file.
      * @param string $extract_path Path to extract the files to.
      * @return bool True if the files were extracted successfully.
@@ -44,6 +48,15 @@ class Zip
         return true;
     }
 
+    /**
+     * Creates a zip archive from a list of files.
+     *
+     * @param string $zip_path Path to the zip file to create.
+     * @param array $files An array of file paths to include in the zip archive.
+     * @return bool True if the zip file was created successfully.
+     * @throws FileNotFoundException If any of the files do not exist.
+     * @throws ZipException If the zip file cannot be created.
+     */
     public static function create(string $zip_path, array $files): bool
     {
         $zip = new \ZipArchive();

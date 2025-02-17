@@ -14,6 +14,10 @@ use Aifrus\Fc2s\Exceptions\{
 
 use mysqli;
 
+/**
+ * Class Process
+ * Manages the processing of FAA data including downloading, database creation, and exporting.
+ */
 class Process
 {
     const INDEX_DB = 'INDEX';
@@ -22,6 +26,15 @@ class Process
     private ?string $prefix = null;
     private ?string $export_dir = null;
 
+    /**
+     * Process constructor.
+     * Initializes the process with configuration and sets up the database connection.
+     *
+     * @param array $config Configuration array containing database and export directory settings.
+     * @throws ProcessException If required configuration is missing.
+     * @throws DirectoryCreationException If the export directory cannot be created.
+     * @throws SqlException If the database connection fails.
+     */
     public function __construct(private array $config)
     {
         $this->export_dir = $config['export_dir'] ?? null;
@@ -42,33 +55,69 @@ class Process
         $this->create_index_database() or throw new SqlException("Failed to create index database.");
     }
 
+    /**
+     * Processes the latest available FAA data.
+     *
+     * @param array $config Configuration array.
+     * @return bool True on success, false on failure.
+     */
     public static function get_latest(array $config): bool
     {
         return (new self($config))->process_latest();
     }
 
+    /**
+     * Processes the current FAA data.
+     *
+     * @param array $config Configuration array.
+     * @return bool True on success, false on failure.
+     */
     public static function get_current(array $config): bool
     {
         return (new self($config))->process_current();
     }
 
+    /**
+     * Processes all available FAA data.
+     *
+     * @param array $config Configuration array.
+     * @return bool True on success, false on failure.
+     */
     public static function get_all(array $config): bool
     {
         return (new self($config))->process_all_available();
     }
 
+    /**
+     * Processes the latest dataset.
+     *
+     * @return bool True on success, false on failure.
+     * @throws CurlException If fetching the dataset date fails.
+     */
     public function process_latest(): bool
     {
         $date = FetchFAA::get_available_dates()[0] or throw new CurlException("Failed to get current dataset date.");
         return $this->process_date($date);
     }
 
+    /**
+     * Processes the current dataset.
+     *
+     * @return bool True on success, false on failure.
+     * @throws CurlException If fetching the current dataset date fails.
+     */
     public function process_current(): bool
     {
         $date = FetchFAA::get_current_date() or throw new CurlException("Failed to get current dataset date.");
         return $this->process_date($date);
     }
 
+    /**
+     * Processes all available datasets.
+     *
+     * @return bool True on success, false on failure.
+     * @throws CurlException If fetching available dataset dates fails.
+     */
     public function process_all_available(): bool
     {
         $success = 0;
@@ -82,6 +131,12 @@ class Process
         return !$error;
     }
 
+    /**
+     * Processes a dataset for a specific date.
+     *
+     * @param string $date The date of the dataset to process.
+     * @return bool True on success, false on failure.
+     */
     public function process_date(string $date): bool
     {
         echo ("Processing $date\n");
@@ -89,7 +144,7 @@ class Process
         $tmp_dir = $this->make_tmp_folder() or throw new DirectoryCreationException("Failed to create temporary directory.");
         try {
             $url = FetchFAA::get_data_file_url($date) or throw new CurlException("Failed to get dataset URL.");
-            $zip = $tmp_dir . '/' . basename($url) or throw new FileWriteException("Failed to get dataset ZIP path.");
+            $zip = $tmp_dir . '" . basename($url) or throw new FileWriteException("Failed to get dataset ZIP path.");
             HTTPS::download($url, $zip, FetchFAA::HEADERS) or throw new CurlException("Failed to download dataset.");
             Zip::extract($zip, $tmp_dir) or throw new ZipException("Failed to extract dataset.");
             $this->set_permissions($tmp_dir) or throw new DirectoryCreationException("Failed to set permissions.");
@@ -105,6 +160,14 @@ class Process
         return !$error;
     }
 
+    /**
+     * Executes SQL statements on a specified database.
+     *
+     * @param string $db_name The name of the database.
+     * @param array $statements The SQL statements to execute.
+     * @return bool True on success, false on failure.
+     * @throws SqlException If executing a statement fails.
+     */
     public function execute_statements(string $db_name, array $statements): bool
     {
         $this->sql->select_db($db_name);
@@ -127,6 +190,12 @@ class Process
         return true;
     }
 
+    /**
+     * Creates a temporary folder for processing.
+     *
+     * @return string The path to the created temporary folder.
+     * @throws DirectoryCreationException If the directory cannot be created.
+     */
     public function make_tmp_folder(): string
     {
         $tmp_dir = sys_get_temp_dir() . '/fc2s_' . time() . '_' . rand(10000000, 99999999);
@@ -134,12 +203,26 @@ class Process
         return $tmp_dir;
     }
 
+    /**
+     * Sets file permissions for a directory.
+     *
+     * @param string $directory The directory to set permissions for.
+     * @return bool True on success, false on failure.
+     * @throws DirectoryCreationException If setting permissions fails.
+     */
     public function set_permissions(string $directory): bool
     {
-        foreach (scandir($directory) as $file) if ($file != '.' && $file != '..') chmod($directory . '/' . $file, 0644) or throw new DirectoryCreationException("Failed to set permissions.");
+        foreach (scandir($directory) as $file) if ($file != '.' && $file != '..') chmod($directory . '" . $file, 0644) or throw new DirectoryCreationException("Failed to set permissions.");
         return true;
     }
 
+    /**
+     * Creates a database for a specific date.
+     *
+     * @param string $date The date for which to create the database.
+     * @return string The name of the created database.
+     * @throws SqlException If creating the database fails.
+     */
     public function create_database(string $date): string
     {
         $db_name = $this->prefix . $date;
@@ -154,6 +237,12 @@ class Process
         return $db_name;
     }
 
+    /**
+     * Creates the index database and table if they do not exist.
+     *
+     * @return bool True on success, false on failure.
+     * @throws SqlException If creating the index database or table fails.
+     */
     public function create_index_database(): bool
     {
         $name_len = strlen($this->prefix) + 10;
@@ -175,9 +264,18 @@ class Process
         return true;
     }
 
+    /**
+     * Exports a database to a SQL file and compresses it.
+     *
+     * @param string $db_name The name of the database to export.
+     * @return bool True on success, false on failure.
+     * @throws ProcessException If exporting the database fails.
+     * @throws ZipException If creating the zip file fails.
+     * @throws FileWriteException If deleting the SQL file fails.
+     */
     public function export_database(string $db_name): bool
     {
-        $sql_file = $this->export_dir . '/' . $db_name . '.sql';
+        $sql_file = $this->export_dir . '" . $db_name . '.sql';
         $zip_file = $sql_file . '.zip';
         $command = "mysqldump --compatible=ansi --skip-comments -u {$this->config['user']} -p{$this->config['pass']} -h {$this->config['host']} $db_name > $sql_file";
         exec($command, $output, $return_var);
@@ -187,11 +285,19 @@ class Process
         return true;
     }
 
+    /**
+     * Deletes a directory and its contents.
+     *
+     * @param string $dir The directory to delete.
+     * @return bool True on success, false on failure.
+     * @throws DirectoryCreationException If deleting the directory fails.
+     * @throws FileWriteException If deleting a file fails.
+     */
     public function delete_directory(string $dir): bool
     {
         $files = array_diff(scandir($dir), ['.', '..']);
         foreach ($files as $file) {
-            $path = $dir . '/' . $file;
+            $path = $dir . '" . $file;
             if (is_dir($path)) $this->delete_directory($path);
             else unlink($path) or throw new FileWriteException("Failed to delete file: $path");
         }

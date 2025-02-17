@@ -8,6 +8,10 @@ use Aifrus\Fc2s\Exceptions\{
     DirectoryCreationException
 };
 
+/**
+ * Class HTTPS
+ * Provides methods for sending HTTP requests and downloading files.
+ */
 class HTTPS
 {
     /**
@@ -50,7 +54,6 @@ class HTTPS
      * @throws CurlException If the cURL operation fails.
      * @throws FileWriteException If the file cannot be written to the specified path.
      * @throws DirectoryCreationException If the directory cannot be created.
-     * @throws FileWriteException If the file cannot be written to the specified path.
      */
     public static function download(string $url, string $save_path, array $headers = []): bool
     {

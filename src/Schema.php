@@ -13,11 +13,25 @@ use Aifrus\Fc2s\Exceptions\{
  */
 class Schema
 {
+    /**
+     * Generates SQL statements from schema files in a directory.
+     *
+     * @param string $data_dir The directory containing schema files.
+     * @return array|false An array of SQL statements or false on failure.
+     */
     public static function generate(string $data_dir): array|false
     {
         return self::process_schema_files(self::get_schema_files($data_dir));
     }
 
+    /**
+     * Retrieves schema files from a directory.
+     *
+     * @param string $data_dir The directory to search for schema files.
+     * @return array An array of schema file paths.
+     * @throws DirectoryNotFoundException If the directory does not exist.
+     * @throws FileNotFoundException If no schema files are found.
+     */
     public static function get_schema_files(string $data_dir): array
     {
         if (!is_dir($data_dir)) throw new DirectoryNotFoundException("Directory not found: {$data_dir}");
@@ -26,6 +40,12 @@ class Schema
         return $files;
     }
 
+    /**
+     * Processes schema files to generate SQL statements.
+     *
+     * @param array $schema_files An array of schema file paths.
+     * @return array An array of SQL statements.
+     */
     public static function process_schema_files(array $schema_files): array
     {
         $statements = [];
@@ -37,6 +57,14 @@ class Schema
         return $statements;
     }
 
+    /**
+     * Processes a single schema file to generate SQL statements.
+     *
+     * @param string $schema_file The path to the schema file.
+     * @return array An array of SQL statements.
+     * @throws FileNotFoundException If the file cannot be opened.
+     * @throws SchemaException If an unexpected data type is encountered.
+     */
     public static function process_schema_file(string $schema_file): array
     {
         $handle = fopen($schema_file, 'r');
@@ -82,6 +110,14 @@ class Schema
         return $statements;
     }
 
+    /**
+     * Generates an SQL statement for a table.
+     *
+     * @param string $tableName The name of the table.
+     * @param array $columns An array of column definitions.
+     * @param string $schema_file The path to the schema file.
+     * @return string The generated SQL statement.
+     */
     private static function generate_sql(string $tableName, array $columns, string $schema_file): string
     {
         $schema_path = dirname($schema_file);
@@ -108,6 +144,13 @@ class Schema
         return $sql;
     }
 
+    /**
+     * Maps a data type from the schema to an SQL data type.
+     *
+     * @param string $type The data type from the schema.
+     * @param string $maxLength The maximum length or precision of the data type.
+     * @return string|false The mapped SQL data type or false if mapping fails.
+     */
     private static function map_data_type(string $type, string $maxLength): string|false
     {
         if ($type === 'NUMBER') {
