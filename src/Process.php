@@ -40,6 +40,7 @@ class Process
         $this->export_dir = $config['export_dir'] ?? null;
         if (!$this->export_dir) throw new ProcessException("Missing export directory.");
         if (!is_dir($this->export_dir)) {
+            echo ("Creating export directory...\n");
             if (!mkdir($this->export_dir, 0777, true)) throw new DirectoryCreationException("Failed to create export directory.");
         }
 
@@ -48,10 +49,12 @@ class Process
         $pass = $config['pass'] ?? null;
         if (!$host || !$user || !$pass) throw new ProcessException("Missing database credentials.");
 
+        echo ("Connecting to database...\n");
         $this->sql = new mysqli($host, $user, $pass);
         if ($this->sql->connect_error) throw new SqlException("Failed to connect to database: " . $this->sql->connect_error);
 
         $this->prefix = ($config['prefix'] ?? null) or throw new ProcessException("Missing dataset prefix.");
+        echo ("Creating index database...\n");
         $this->createIndexDatabase() or throw new SqlException("Failed to create index database.");
     }
 
@@ -96,6 +99,7 @@ class Process
      */
     public function processLatest(): bool
     {
+        echo ("Fetching latest date...\n");
         $date = FetchFAA::getAvailableDates()[0] or throw new CurlException("Failed to get current dataset date.");
         return $this->processDate($date);
     }
@@ -108,6 +112,7 @@ class Process
      */
     public function processCurrent(): bool
     {
+        echo ("Fetching current date...\n");
         $date = FetchFAA::getCurrentDate() or throw new CurlException("Failed to get current dataset date.");
         return $this->processDate($date);
     }
@@ -122,6 +127,7 @@ class Process
     {
         $success = 0;
         $error = 0;
+        echo ("Fetching available dates...\n");
         $dates = FetchFAA::getAvailableDates() or throw new CurlException("Failed to get available dataset dates.");
         foreach (array_reverse($dates) as $date) {
             $res = $this->processDate($date);
