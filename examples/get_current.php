@@ -19,7 +19,7 @@ if (!is_dir($exportDir) && !mkdir($exportDir, 0755, true)) {
 
 // Database configuration
 $config = [
-    'host' => '127.0.0.1',
+    'host' => 'mysql',
     'user' => 'nasr',
     'pass' => 'nasr',
     'prefix' => 'NASR_',
