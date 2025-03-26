@@ -15,7 +15,7 @@
         }
     ],
     "minimum-stability": "stable",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "require": {
         "php": "^7.1 || ^8.0",
         "ext-curl": "*",
